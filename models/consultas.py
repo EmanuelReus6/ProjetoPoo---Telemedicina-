@@ -11,7 +11,7 @@ class consultas(db.Model):
             'descricao':self.descricacao
         }
     
-    codigo = db.Column(db.Integer(5), primary_key=True)
+    codigo = db.Column(db.Integer, primary_key=True)
     codpaciente = db.Column(ForeignKey('pacientes.codigo'))
     codmedico = db.Column(ForeignKey('medicos.codigo'))
     horariodata = db.Column(db.DateTime)

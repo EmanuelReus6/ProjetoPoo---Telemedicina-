@@ -13,7 +13,7 @@ class prescricoes(db.Model):
             'datafim':self.datafim,
         }
     
-    codigo = db.Column(db.Integer(5), primary_key=True)
+    codigo = db.Column(db.Integer, primary_key=True)
     codconsulta = db.Column(ForeignKey('consultas.codigo'))
     medicamento = db.Column(db.String(50))
     dosagem = db.Column(db.String(50))

@@ -1,4 +1,4 @@
-from controllers.pacientesController import clientesController
+from controllers.pacientesController import pacientesController
 
 def pacientes(app):
-    app.route('/pacientes', methods=['POST', 'GET', 'PUT', 'DELETE'])(clientesController)
+    app.route('/pacientes', methods=['POST', 'GET', 'PUT', 'DELETE'])(pacientesController)

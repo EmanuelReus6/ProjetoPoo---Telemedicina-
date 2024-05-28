@@ -6,46 +6,45 @@ def consultasController():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            user = consultas(data['nome'], data['email'], data['senha'], data['papel'])
-            db.session.add(user)
+            cons = consultas(data['horariodata'], data['status'], data['descricao'])
+            db.session.add(cons)
             db.session.commit()
-            return 'Usuário criado com sucesso', 200
+            return 'Consulta criada com sucesso', 200
         except:
-            return 'O usuário não foi criado', 405
+            return 'A consulta não foi criada', 405
         
     elif request.method == 'GET':
         try:
             data = consultas.query.all()
-            return render_template('consultas.html', data={'consultas': [cliente.to_dict() for cliente in data]})
+            return render_template('consultas.html', data={'Consultas': [consulta.to_dict() for consulta in data]})
         except Exception as e:
-            return 'Não foi possível buscar usuários', 405
-    
+            return 'Não foi possível buscar consultas', 405
+        
     elif request.method == 'PUT':
          try:
               data = request.get_json()
-              put_cliente_id = data['codigo']
-              put_cliente = consultas.query.get(put_cliente_id)
-              if put_cliente is None:
-                   return {'error': 'Cliente não encontrado'}, 404
-              put_cliente.nome = data.get('nome', put_cliente.nome)
-              put_cliente.email = data.get('email', put_cliente.email)
-              put_cliente.senha = data.get('senha', put_cliente.senha)
-              put_cliente.papel = data.get('papel', put_cliente.papel)
+              put_consulta_id = data['codigo']
+              put_consulta = consultas.query.get(put_consulta_id)
+              if put_consulta is None:
+                   return {'error': 'Consulta não encontrada'}, 404
+              put_consulta.horariodata = data.get('horariodata', put_consulta.horariodata)
+              put_consulta.status = data.get('status', put_consulta.status)
+              put_consulta.descricao = data.get('descricao', put_consulta.descricao)
               db.session.commit()
-              return 'Cliente atualizado com sucesso', 200
+              return 'Consulta atualizada com sucesso', 200
          except Exception as e:
-              return {'error': 'Erro ao atualizar cliente. Erro {}'.format(e)}, 400
-    
+              return {'error': 'Erro ao atualizar consulta. Erro {}'.format(e)}, 400
+         
     elif request.method == 'DELETE':
         try:
             data = request.get_json()
-            cliente_id = data['codigo']
-            cliente = consultas.query.get(cliente_id)
-            if cliente:
-                db.session.delete(cliente)
+            consulta_id = data['codigo']
+            consulta = consultas.query.get(consulta_id)
+            if consulta:
+                db.session.delete(consulta)
                 db.session.commit()
-                return 'Cliente excluído com sucesso', 200
+                return 'Consulta excluída com sucesso', 200
             else:
-                return {'error': 'Cliente não encontrado'}, 404
+                return {'error': 'Consulta não encontrada'}, 404
         except Exception as e:
-            return {'error': 'Erro ao excluir cliente. Erro {}'.format(e)}, 400
+            return {'error': 'Erro ao excluir consulta. Erro {}'.format(e)}, 400

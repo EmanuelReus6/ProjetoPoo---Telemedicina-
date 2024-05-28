@@ -10,7 +10,7 @@ class usuarios(db.Model):
             'papel': self.papel
         }
     
-    codigo = db.Column(db.Integer(5), primary_key=True)
+    codigo = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50))
     email = db.Column(db.String(50))
     senha = db.Column(db.String(50))

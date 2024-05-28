@@ -12,7 +12,7 @@ class pacientes(db.Model):
             'endereco': self.endereco
         }
     
-    codigo = db.Column(db.Integer(5), primary_key=True)
+    codigo = db.Column(db.Integer, primary_key=True)
     codusuario = db.Column(ForeignKey('usuarios.codigo'))
     nome = db.Column(db.String(50))
     nascimento = db.Column(db.Date)

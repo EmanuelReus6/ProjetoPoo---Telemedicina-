@@ -16,36 +16,36 @@ def usuariosController():
     elif request.method == 'GET':
         try:
             data = usuarios.query.all()
-            return render_template('usuarios.html', data={'usuarios': [cliente.to_dict() for cliente in data]})
+            return render_template('usuarios.html', data={'usuários': [usuario.to_dict() for usuario in data]})
         except Exception as e:
             return 'Não foi possível buscar usuários', 405
-    
+        
     elif request.method == 'PUT':
          try:
               data = request.get_json()
-              put_cliente_id = data['codigo']
-              put_cliente = usuarios.query.get(put_cliente_id)
-              if put_cliente is None:
-                   return {'error': 'Cliente não encontrado'}, 404
-              put_cliente.nome = data.get('nome', put_cliente.nome)
-              put_cliente.email = data.get('email', put_cliente.email)
-              put_cliente.senha = data.get('senha', put_cliente.senha)
-              put_cliente.papel = data.get('papel', put_cliente.papel)
+              put_usuario_id = data['codigo']
+              put_usuario = usuarios.query.get(put_usuario_id)
+              if put_usuario is None:
+                   return {'error': 'usuário não encontrado'}, 404
+              put_usuario.nome = data.get('nome', put_usuario.nome)
+              put_usuario.email = data.get('email', put_usuario.email)
+              put_usuario.senha = data.get('senha', put_usuario.senha)
+              put_usuario.papel = data.get('papel', put_usuario.papel)
               db.session.commit()
-              return 'Cliente atualizado com sucesso', 200
+              return 'usuário atualizado com sucesso', 200
          except Exception as e:
-              return {'error': 'Erro ao atualizar cliente. Erro {}'.format(e)}, 400
-    
+              return {'error': 'Erro ao atualizar usuário. Erro {}'.format(e)}, 400
+         
     elif request.method == 'DELETE':
         try:
             data = request.get_json()
-            cliente_id = data['codigo']
-            cliente = usuarios.query.get(cliente_id)
-            if cliente:
-                db.session.delete(cliente)
+            usuario_id = data['codigo']
+            usuario = usuarios.query.get(usuario_id)
+            if usuario:
+                db.session.delete(usuario)
                 db.session.commit()
-                return 'Cliente excluído com sucesso', 200
+                return 'usuário excluído com sucesso', 200
             else:
-                return {'error': 'Cliente não encontrado'}, 404
+                return {'error': 'usuário não encontrado'}, 404
         except Exception as e:
-            return {'error': 'Erro ao excluir cliente. Erro {}'.format(e)}, 400
+            return {'error': 'Erro ao excluir usuário. Erro {}'.format(e)}, 400
