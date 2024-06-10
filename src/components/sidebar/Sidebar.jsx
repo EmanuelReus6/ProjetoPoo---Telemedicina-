@@ -7,21 +7,28 @@ import EventIcon from '@mui/icons-material/Event';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import SickIcon from '@mui/icons-material/Sick';
 import LogoutIcon from '@mui/icons-material/Logout';
+import {Link} from "react-router-dom"
+
+
 
 const Sidebar = () => {
   return (
     <div className='sidebar'>
     <div className="top">
+        <Link to="/" style={{textDecoration:"none"}}>
         <span className='logo'>TrustCare</span>
+        </Link>
     </div>
     <hr/>
     <div className="center">
         <ul>
             <p className="title">MAIN</p>
+            <Link to="/users" style={{textDecoration:"none"}}>
             <li>
                 <PersonIcon className='icon'/>
                 <span>usuários</span>
             </li>
+            </Link>
             <p className="title">FUCTION</p>
             <li>
                 <SickIcon className='icon'/>
@@ -46,10 +53,6 @@ const Sidebar = () => {
                 <span>log out</span>
             </li>
         </ul>
-    </div>
-    <div className="bottom">
-        <div className="colorOption"></div>
-        <div className="colorOption"></div>
     </div>
     </div>
   )

@@ -1,0 +1,53 @@
+.datatable {
+    height: 600px;
+    padding: 20px;
+    background-color: #fff; /* Adicione um fundo branco ou qualquer outra cor que desejar */
+  
+    .datatableTitle {
+      width: 100%;
+      font-size: 24px;
+      color: gray;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+  
+      .link {
+        text-decoration: none;
+        color: green;
+        font-size: 16px;
+        font-weight: 400;
+        border: 1px solid green;
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    }
+  
+    .cellAction {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 5px;
+  
+      .editarButton {
+        padding: 2px 10px;
+        border-radius: 5px;
+        color: darkblue;
+        border: 1px dotted rgba(0, 0, 139, 0.466);
+        cursor: pointer;
+      }
+      .deleteButton {
+        padding: 2px 5px;
+        border-radius: 5px;
+        color: crimson;
+        border: 1px dotted rgba(220, 20, 60, 0.432);
+        cursor: pointer;
+      }
+    }
+  
+    .dataGridContainer {
+      height: calc(100% - 50px); /* Ajuste conforme necessário para manter a altura */
+    }
+  }
+  
