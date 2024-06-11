@@ -22,7 +22,7 @@ const rows = [
   { id: 9, senha: 'Roxie', nome: 'Harvey', age: 65 },
 ];
 
-const Datatable = () => {
+const DatatablePacientes = () => {
   const actionColumn = [{
     field: "action", 
     headerName: "Action", 
@@ -30,7 +30,7 @@ const Datatable = () => {
     renderCell: () => {
       return (
         <div className="cellAction">
-          <Link to="/users/new" style={{ textDecoration: "none" }} className="link">
+          <Link to="/pacientes/newpacientes" style={{ textDecoration: "none" }} className="link">
           <div className="editarButton">Editar</div>
           </Link>
           <div className="deleteButton">Delete</div>
@@ -42,8 +42,8 @@ const Datatable = () => {
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        Add New User
-        <Link to="/users/new" style={{ textDecoration: "none" }} className="link">
+        Add New Pacientes
+        <Link to="/pacientes/newpacientes" style={{ textDecoration: "none" }} className="link">
           Add New
         </Link>
       </div>
@@ -58,4 +58,4 @@ const Datatable = () => {
   );
 }
 
-export default Datatable;
+export default DatatablePacientes;

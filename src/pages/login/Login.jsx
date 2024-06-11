@@ -1,7 +1,7 @@
 // src/LoginPage.js
 import React from 'react';
 import './login.css'; // Importando o arquivo de estilo
-
+import { Link } from 'react-router-dom';  // Certifique-se de importar o Link
 const LoginPage = () => {
   return (
     <div className="login-container">
@@ -19,7 +19,9 @@ const LoginPage = () => {
             <label htmlFor="password">Senha</label>
             <input type="password" id="password" name="password" required />
           </div>
+          <Link to="/" style={{ textDecoration: "none" }} className="link">
           <button type="submit">Entrar</button>
+          </Link>
         </form>
       </div>
     </div>
