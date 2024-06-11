@@ -6,6 +6,7 @@ class pacientes(db.Model):
 
     def to_dict(self):
         return{
+            'codusuario': self.codusuario,
             'nome':self.nome,
             'nascimento':self.nascimento,
             'genero': self.genero,
@@ -21,7 +22,8 @@ class pacientes(db.Model):
 
     usuario = relationship('usuarios', backref='pacientes')
 
-    def __init__(self,nome,nascimento, genero, endereco):
+    def __init__(self,codusuario, nome,nascimento, genero, endereco):
+        self.codusuario = codusuario
         self.nome = nome
         self.nascimento = nascimento
         self.genero = genero

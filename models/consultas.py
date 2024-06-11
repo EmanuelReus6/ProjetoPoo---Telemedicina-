@@ -6,22 +6,26 @@ class consultas(db.Model):
 
     def to_dict(self):
         return{
+            'codpaciente': self.codpaciente,
+            'codmedico': self.codmedico,
             'horariodata':self.horariodata,
             'status':self.status,
-            'descricao':self.descricacao
+            'descricao':self.descricao
         }
     
     codigo = db.Column(db.Integer, primary_key=True)
     codpaciente = db.Column(ForeignKey('pacientes.codigo'))
     codmedico = db.Column(ForeignKey('medicos.codigo'))
-    horariodata = db.Column(db.DateTime)
+    horariodata = db.Column(db.Date)
     status = db.Column(db.String(50))
-    descricacao = db.Column(db.String(200))
+    descricao = db.Column(db.String(200))
 
     paciente = relationship('pacientes', backref='consultas')
     medico = relationship('medicos', backref='consultas')
 
-    def __init__(self,horariodata, status, descricao):
+    def __init__(self,codpaciente, codmedico, horariodata, status, descricao):
+        self.codpaciente = codpaciente
+        self.codmedico = codmedico
         self.horariodata = horariodata
         self.status = status
-        self.descricacao = descricao
+        self.descricao = descricao
