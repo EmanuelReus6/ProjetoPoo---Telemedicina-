@@ -1,4 +1,4 @@
-import './List.scss'
+import './list.scss'
 import Sidebar from "../../components/sidebar/Sidebar"
 import Navbar from "../../components/navbar/Navbar"
 import DatatablePrescricoes from '../../components/datatable/DatatablePrescricoes'
