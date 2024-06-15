@@ -30,6 +30,7 @@ const New = () => {
     }
   }
 
+
   async function putData() {
     try {
       const response = await axios.put('http://localhost:3000/clientes', {
@@ -47,8 +48,7 @@ const New = () => {
       setPapel('');
     } catch (e) {
       console.log(e);
-    }
-  }
+    }}
 
   return (
     <div className="new">

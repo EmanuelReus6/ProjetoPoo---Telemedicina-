@@ -1,31 +1,65 @@
-// src/LoginPage.js
-import React from 'react';
-import './login.css'; // Importando o arquivo de estilo
-import { Link } from 'react-router-dom';  // Certifique-se de importar o Link
-const LoginPage = () => {
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+function Login() {
+  const [nome, setNome] = useState('');
+  const [senha, setSenha] = useState('');
+  const [data, setData] = useState([]);
+
+  const navigate = useNavigate();
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    try {
+      const response = await axios.get('/usuario'); // URL relativa
+      setData(response.data.usuarios);
+      console.log(response.data);
+
+      let userFound = false;
+      for (const usuario of response.data.usuarios) {
+        if (usuario.login === nome && usuario.senha === senha) {
+          userFound = true;
+          break;
+        }
+      }
+
+      if (userFound) {
+        navigate('/home');
+        setNome('');
+        setSenha('');
+      } else {
+        alert('Dados inválidos');
+      }
+    } catch (error) {
+      console.error('Erro ao obter dados de usuário:', error);
+    }
+  }
+
   return (
-    <div className="login-container">
-      <div className="image-container">
-        <img src="https://img.freepik.com/premium-photo/attractive-young-doctor_160672-2739.jpg?w=360" alt="Login" />
-      </div>
-      <div className="login-form">
-        <h2>Login</h2>
-        <form>
-          <div className="form-group">
-            <label htmlFor="username">Usuário</label>
-            <input type="text" id="username" name="username" required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Senha</label>
-            <input type="password" id="password" name="password" required />
-          </div>
-          <Link to="/" style={{ textDecoration: "none" }} className="link">
-          <button type="submit">Entrar</button>
-          </Link>
-        </form>
-      </div>
+    <div>
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>nome:</label>
+          <input
+            type="text"
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>senha:</label>
+          <input
+            type="senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
-};
+}
 
-export default LoginPage;
+export default Login;
