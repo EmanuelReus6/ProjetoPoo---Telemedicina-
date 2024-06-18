@@ -6,6 +6,7 @@ class prescricoes(db.Model):
 
     def to_dict(self):
         return{
+            'codigo':self.codigo,
             'codconsulta': self.codconsulta,
             'medicamento':self.medicamento,
             'dosagem':self.dosagem,

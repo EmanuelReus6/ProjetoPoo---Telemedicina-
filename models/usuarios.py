@@ -4,6 +4,7 @@ class usuarios(db.Model):
 
     def to_dict(self):
         return{
+            'codigo':self.codigo,
             'nome':self.nome,
             'email':self.email,
             'senha': self.senha,

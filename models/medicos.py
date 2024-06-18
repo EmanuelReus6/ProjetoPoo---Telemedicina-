@@ -6,6 +6,7 @@ class medicos(db.Model):
 
     def to_dict(self):
         return{
+            'codigo':self.codigo,
             'codusuario': self.codusuario,
             'nome':self.nome,
             'especializacao':self.especializacao,
