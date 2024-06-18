@@ -6,7 +6,7 @@ def medicosController():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            pac = medicos(data['nome'], data['nascimento'], data['genero'], data['endereco'])
+            pac = medicos(data['codusuario'], data['nome'], data['especializacao'], data['afiliacaohospitalar'])
             db.session.add(pac)
             db.session.commit()
             return 'Médico criado com sucesso', 200
@@ -16,7 +16,8 @@ def medicosController():
     elif request.method == 'GET':
         try:
             data = medicos.query.all()
-            return render_template('medicos.html', data={'Médicos': [medico.to_dict() for medico in data]})
+            new = {'medicos': [medico.to_dict() for medico in data]}
+            return new, 200
         except Exception as e:
             return 'Não foi possível buscar médicos', 405
         
@@ -27,10 +28,10 @@ def medicosController():
               put_medico = medicos.query.get(put_medico_id)
               if put_medico is None:
                    return {'error': 'Médico não encontrado'}, 404
+              put_medico.codusuario = data.get('codusuario', put_medico.codusuario)
               put_medico.nome = data.get('nome', put_medico.nome)
-              put_medico.nascimento = data.get('nascimento', put_medico.nascimento)
-              put_medico.genero = data.get('genero', put_medico.genero)
-              put_medico.endereco = data.get('endereco', put_medico.endereco)
+              put_medico.especializacao = data.get('especializacao', put_medico.especializacao)
+              put_medico.afiliacaohospitalar = data.get('afiliacaohospitalar', put_medico.afiliacaohospitalar)
               db.session.commit()
               return 'Médico atualizado com sucesso', 200
          except Exception as e:

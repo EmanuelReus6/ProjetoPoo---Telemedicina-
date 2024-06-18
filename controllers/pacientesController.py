@@ -6,7 +6,7 @@ def pacientesController():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            pac = pacientes(data['nome'], data['nascimento'], data['genero'], data['endereco'])
+            pac = pacientes(data['codusuario'], data['nome'], data['nascimento'], data['genero'], data['endereco'])
             db.session.add(pac)
             db.session.commit()
             return 'Paciente criado com sucesso', 200
@@ -16,7 +16,8 @@ def pacientesController():
     elif request.method == 'GET':
         try:
             data = pacientes.query.all()
-            return render_template('pacientes.html', data={'Pacientes': [paciente.to_dict() for paciente in data]})
+            new = {'pacientes': [paciente.to_dict() for paciente in data]}
+            return new, 200
         except Exception as e:
             return 'Não foi possível buscar pacientes', 405
         
@@ -27,6 +28,7 @@ def pacientesController():
               put_paciente = pacientes.query.get(put_paciente_id)
               if put_paciente is None:
                    return {'error': 'Paciente não encontrado'}, 404
+              put_paciente.codusuario = data.get('codusuario', put_paciente.codusuario)
               put_paciente.nome = data.get('nome', put_paciente.nome)
               put_paciente.nascimento = data.get('nascimento', put_paciente.nascimento)
               put_paciente.genero = data.get('genero', put_paciente.genero)

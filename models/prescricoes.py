@@ -6,6 +6,7 @@ class prescricoes(db.Model):
 
     def to_dict(self):
         return{
+            'codconsulta': self.codconsulta,
             'medicamento':self.medicamento,
             'dosagem':self.dosagem,
             'frequencia':self.frequencia,
@@ -23,7 +24,8 @@ class prescricoes(db.Model):
 
     consulta = relationship('consultas', backref='prescricoes')
 
-    def __init__(self,medicamento, dosagem, frequencia, datainicio, datafim):
+    def __init__(self,codconsulta, medicamento, dosagem, frequencia, datainicio, datafim):
+        self.codconsulta = codconsulta
         self.medicamento = medicamento
         self.dosagem = dosagem
         self.frequencia = frequencia
