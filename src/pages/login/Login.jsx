@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './login.css'; // Importa o arquivo CSS
 
 function Login() {
   const [nome, setNome] = useState('');
@@ -12,7 +13,7 @@ function Login() {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      const response = await axios.get('/usuario'); // URL relativa
+      const response = await axios.get('/users'); // URL relativa
       setData(response.data.usuarios);
       console.log(response.data);
 
@@ -37,27 +38,32 @@ function Login() {
   }
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>nome:</label>
-          <input
-            type="text"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>senha:</label>
-          <input
-            type="senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+    <div className="login-container">
+      <div className="image-container">
+        <img src="https://static6.depositphotos.com/1032489/548/i/950/depositphotos_5480747-stock-photo-the-young-black-doctor.jpg" alt="Imagem de login" />
+      </div>
+      <div className="login-form">
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Nome:</label>
+            <input
+              type="text"
+              value={nome}
+              onChange={(e) => setNome(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label>Senha:</label>
+            <input
+              type="password" // Corrigi o tipo de input para senha
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+            />
+          </div>
+          <button type="submit">Login</button>
+        </form>
+      </div>
     </div>
   );
 }

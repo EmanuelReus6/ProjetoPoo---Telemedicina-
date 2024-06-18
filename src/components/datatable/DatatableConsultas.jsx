@@ -1,61 +1,90 @@
-import "./Datatable.scss";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Link } from 'react-router-dom';  // Certifique-se de importar o Link
+import './Datatable.scss';
+import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'código', width: 70 },
-  { field: 'nome', headerName: 'nome', width: 130 },
-  { field: 'email', headerName: 'email', width: 130 },
-  { field: 'senha', headerName: 'senha', width: 130 },
-  { field: 'papel', headerName: 'papel', width: 130 },
-];
-
-const rows = [
-  { id: 1, senha: 'Snow', nome: 'Jon', age: 35 },
-  { id: 2, senha: 'Lannister', nome: 'Cersei', age: 42 },
-  { id: 3, senha: 'Lannister', nome: 'Jaime', age: 45 },
-  { id: 4, senha: 'Stark', nome: 'Arya', age: 16 },
-  { id: 5, senha: 'Targaryen', nome: 'Daenerys', age: null },
-  { id: 6, senha: 'Melisandre', nome: null, age: 150 },
-  { id: 7, senha: 'Clifford', nome: 'Ferrara', age: 44 },
-  { id: 8, senha: 'Frances', nome: 'Rossini', age: 36 },
-  { id: 9, senha: 'Roxie', nome: 'Harvey', age: 65 },
+const columns = [
+  { field: 'codigo', headerName: 'Código', width: 100 },
+  { field: 'codmedico', headerName: 'Médico', width: 130 },
+  { field: 'codpaciente', headerName: 'Paciente', width: 130 },
+  { field: 'descricao', headerName: 'Descrição', width: 200 },
+  { field: 'horariodata', headerName: 'Data da Consulta', width: 200 },
+  { field: 'status', headerName: 'Status', width: 130 },
 ];
 
 const DatatableConsultas = () => {
-  const actionColumn = [{
-    field: "action", 
-    headerName: "Action", 
-    width: 200, 
-    renderCell: () => {
+  const [consultas, setConsultas] = useState([]);
+
+  useEffect(() => {
+    const fetchConsultas = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/consultas');
+        const consultasComId = response.data.consultas.map(consulta => ({
+          ...consulta,
+          id: consulta.codigo,
+          horariodata: new Date(consulta.horariodata).toLocaleDateString('pt-BR')
+        }));
+        setConsultas(consultasComId);
+      } catch (error) {
+        console.error('Erro ao buscar consultas:', error);
+      }
+    };
+
+    fetchConsultas();
+  }, []);
+
+  const handleDeleteConsulta = async (codigo) => {
+    if (window.confirm('Tem certeza que deseja excluir esta consulta?')) {
+      try {
+        const response = await axios.delete('http://localhost:3000/consultas', {
+          data: { codigo }
+        });
+        if (response.status === 200) {
+          setConsultas(consultas.filter(consulta => consulta.codigo !== codigo));
+          alert('Consulta excluída com sucesso!');
+        } else {
+          throw new Error('Erro ao excluir consulta');
+        }
+      } catch (error) {
+        console.error('Erro ao excluir consulta:', error);
+      }
+    }
+  };
+
+  const actionColumn = {
+    field: 'action',
+    headerName: 'Ação',
+    width: 200,
+    renderCell: (params) => {
+      const consulta = params.row;
       return (
         <div className="cellAction">
-          <Link to="/consultas/newconsultas" style={{ textDecoration: "none" }} className="link">
-          <div className="editarButton">Editar</div>
+          <Link to={`/consultas/newconsultas/${params.row.codigo}`} style={{ textDecoration: 'none' }} className="link">
+            <div className="editarButton">Editar</div>
           </Link>
-          <div className="deleteButton">Delete</div>
+          <div className="deleteButton" onClick={() => handleDeleteConsulta(consulta.codigo)}>Excluir</div>
         </div>
       );
     }
-  }];
+  };
 
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        Add New Consultas
-        <Link to="/consultas/newconsultas" style={{ textDecoration: "none" }} className="link">
-          Add New
+        Consultas
+        <Link to="/consultas/newconsultas" style={{ textDecoration: 'none' }} className="link">
+          Adicionar Nova
         </Link>
       </div>
       <DataGrid
-        rows={rows}
-        columns={columns.concat(actionColumn)}
+        rows={consultas}
+        columns={[...columns, actionColumn]}
         pageSize={9}
-        rowsPerPageOptions={[9]}  
-        checkboxSelection
+        rowsPerPageOptions={[9]}
       />
     </div>
   );
-}
+};
 
 export default DatatableConsultas;

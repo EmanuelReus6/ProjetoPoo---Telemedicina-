@@ -1,61 +1,94 @@
 import "./Datatable.scss";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Link } from 'react-router-dom';  // Certifique-se de importar o Link
+import { useState, useEffect } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'código', width: 70 },
-  { field: 'nome', headerName: 'nome', width: 130 },
-  { field: 'email', headerName: 'email', width: 130 },
-  { field: 'senha', headerName: 'senha', width: 130 },
-  { field: 'papel', headerName: 'papel', width: 130 },
-];
-
-const rows = [
-  { id: 1, senha: 'Snow', nome: 'Jon', age: 35 },
-  { id: 2, senha: 'Lannister', nome: 'Cersei', age: 42 },
-  { id: 3, senha: 'Lannister', nome: 'Jaime', age: 45 },
-  { id: 4, senha: 'Stark', nome: 'Arya', age: 16 },
-  { id: 5, senha: 'Targaryen', nome: 'Daenerys', age: null },
-  { id: 6, senha: 'Melisandre', nome: null, age: 150 },
-  { id: 7, senha: 'Clifford', nome: 'Ferrara', age: 44 },
-  { id: 8, senha: 'Frances', nome: 'Rossini', age: 36 },
-  { id: 9, senha: 'Roxie', nome: 'Harvey', age: 65 },
+const columns = [
+  { field: 'codigo', headerName: 'Código', width: 100 },
+  { field: 'nome', headerName: 'Nome', width: 200 },
+  { field: 'genero', headerName: 'Gênero', width: 130 },
+  { field: 'nascimento', headerName: 'Nascimento', width: 150 },
+  { field: 'endereco', headerName: 'Endereço', width: 250 },
 ];
 
 const DatatablePacientes = () => {
-  const actionColumn = [{
-    field: "action", 
-    headerName: "Action", 
-    width: 200, 
-    renderCell: () => {
+  const [pacientes, setPacientes] = useState([]);
+
+  useEffect(() => {
+    const fetchPacientes = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/pacientes');
+        if (response.data.pacientes) {
+          setPacientes(response.data.pacientes.map(paciente => ({
+            id: paciente.codigo,
+            nome: paciente.nome,
+            genero: paciente.genero,
+            nascimento: new Date(paciente.nascimento).toLocaleDateString('pt-BR'),
+            endereco: paciente.endereco,
+            codigo: paciente.codigo
+          })));
+        }
+      } catch (error) {
+        console.error('Erro ao buscar pacientes:', error);
+      }
+    };
+
+    fetchPacientes();
+  }, []);
+
+  const handleDelete = async (codigo) => {
+    if (window.confirm('Tem certeza que deseja excluir este paciente?')) {
+      try {
+        const response = await axios.delete('http://localhost:3000/pacientes', {
+          data: { codigo }
+        });
+        if (response.status === 200) {
+          setPacientes(pacientes.filter(paciente => paciente.codigo !== codigo));
+          alert('Paciente excluído com sucesso!');
+        } else {
+          throw new Error('Erro ao excluir paciente');
+        }
+      } catch (error) {
+        console.error('Erro ao excluir paciente:', error);
+      }
+    }
+  };
+
+  const actionColumn = {
+    field: 'action',
+    headerName: 'Ações',
+    width: 150,
+    renderCell: (params) => {
+      const onClickDelete = () => handleDelete(params.row.codigo);
+
       return (
         <div className="cellAction">
-          <Link to="/pacientes/newpacientes" style={{ textDecoration: "none" }} className="link">
-          <div className="editarButton">Editar</div>
+          <Link to={`/pacientes/newpacientes/${params.row.id}`} style={{ textDecoration: 'none' }} className="link">
+            <div className="editarButton">Editar</div>
           </Link>
-          <div className="deleteButton">Delete</div>
+          <div className="deleteButton" onClick={onClickDelete}>Excluir</div>
         </div>
       );
-    }
-  }];
+    },
+  };
 
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        Add New Pacientes
-        <Link to="/pacientes/newpacientes" style={{ textDecoration: "none" }} className="link">
-          Add New
+        Lista de Pacientes
+        <Link to="/pacientes/newpacientes" style={{ textDecoration: 'none' }} className="link">
+          Adicionar Novo
         </Link>
       </div>
       <DataGrid
-        rows={rows}
-        columns={columns.concat(actionColumn)}
+        rows={pacientes}
+        columns={[...columns, actionColumn]}
         pageSize={9}
-        rowsPerPageOptions={[9]}  
-        checkboxSelection
+        rowsPerPageOptions={[9]}
       />
     </div>
   );
-}
+};
 
 export default DatatablePacientes;

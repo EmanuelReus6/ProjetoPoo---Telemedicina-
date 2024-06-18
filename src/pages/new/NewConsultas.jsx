@@ -1,110 +1,139 @@
-import React, { useState } from 'react'
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import './new.scss'
-import Sidebar from "../../components/sidebar/Sidebar"
-import Navbar from "../../components/navbar/Navbar"
-//deixe aqui uma resposta: 
+import './new.scss';
+import Sidebar from '../../components/sidebar/Sidebar';
+import Navbar from '../../components/navbar/Navbar';
+import { useParams, useNavigate } from 'react-router-dom';
+
 const NewConsultas = () => {
-  const [codigo, setCodigo] = useState('');
-  const [codpaciente, setCodpaciente] = useState('');
-  const [codmedico, setCodmedico] = useState('');
-  const [horariodata, setHorariodata] = useState('');
-  const [status, setStatus] = useState('');
-  const [descricao, setDescricao] = useState('');
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    codpaciente: '',
+    codmedico: '',
+    horariodata: '',
+    status: '',
+    descricao: ''
+  });
 
-  async function postData(event) {
-    event.preventDefault(); // Prevenir o comportamento padrão do formulário
-    try {
-      const response = await axios.post('http://localhost:3000/consultas', {
-        codpaciente: codpaciente,
-        codmedico: codmedico,
-        horariodata: horariodata,
-        status: status,
-        descricao: descricao
-      });
-      alert("Consulta criada com sucesso!");
-      setCodpaciente('');
-      setCodmedico('');
-      setHorariodata('');
-      setStatus('');
-      setDescricao('');
-    } catch (e) {
-      console.log(e);
+  useEffect(() => {
+    if (userId) {
+      setFormData(prevState => ({
+        ...prevState,
+        codigo: userId
+      }));
     }
-  }
+  }, [userId]);
 
-  async function putData() {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.put('http://localhost:3000/consultas', {
-        codigo: codigo,
-        codpaciente: codpaciente,
-        codmedico: codmedico,
-        horariodata: horariodata,
-        status: status,
-        descricao: descricao
-      });
-      alert("Consulta criada com sucesso!");
-      setCodigo('');
-      setCodpaciente('');
-      setCodmedico('');
-      setHorariodata('');
-      setStatus('');
-      setDescricao('');
-    } catch (e) {
-      console.log(e);
+      if (userId) {
+        await axios.put(`http://localhost:3000/consultas`, formData);
+        alert('Consulta atualizada com sucesso!');
+      } else {
+        await axios.post('http://localhost:3000/consultas', formData);
+        alert('Consulta criada com sucesso!');
+      }
+      navigate('/consultas');
+    } catch (error) {
+      console.error('Erro ao salvar consulta:', error);
     }
-  }
-
-
-
-
-
-
-
+  };
   return (
     <div className="new">
-      <Sidebar/>
+      <Sidebar />
       <div className="newContainer">
-        <Navbar/>
-        <div className="top"><h1>Adicionar Novas Consultas</h1></div>
+        <Navbar />
+        <div className="top">
+          <h1>{userId ? 'Editar Consulta' : 'Adicionar Nova Consulta'}</h1>
+        </div>
         <div className="bottom">
-        <div className="left">
-          <img src="https://img.freepik.com/free-photo/i-trying-be-best-doctor_329181-2188.jpg?w=360&t=st=1717963692~exp=1717964292~hmac=bf4df23bcfa9b662b2fcf33c88383299e39b8772a090f7fe5a70984b616bf870" alt="" className='img'/>
+          <div className="left">
+            <img
+              src="https://img.freepik.com/fotos-gratis/casal-que-sofre-de-infertilidade_23-2149430773.jpg?t=st=1718724273~exp=1718727873~hmac=25117d89a88c3ceda6b4f5325c542450432752e9b4e629cb0dc7595be752e1f3&w=740"
+              alt=""
+              className="img"
+            />
           </div>
           <div className="right">
-            <form onSubmit={postData}>
+            <form onSubmit={handleSubmit}>
+              {userId && (
+                <div className="formInput">
+                  <label>Código</label>
+                  <input
+                    type="text"
+                    name="codigo"
+                    value={formData.codigo}
+                    onChange={handleChange}
+                    disabled
+                  />
+                </div>
+              )}
               <div className="formInput">
-                <label>Código</label>
-                <input type='text' placeholder='Código (Apenas para realizar uma alteração)' value={codigo} onChange={e => setCodigo(e.target.value)} ></input>
-              </div>                                                                            
-              <div className="formInput">
-                <label>Código Pacientes</label>
-                <input type='text' placeholder='Código pacientes' value={codpaciente} onChange={e => setCodpaciente(e.target.value)} ></input>
+                <label>Código Paciente</label>
+                <input
+                  type="text"
+                  name="codpaciente"
+                  placeholder="Código Paciente"
+                  value={formData.codpaciente}
+                  onChange={handleChange}
+                />
               </div>
               <div className="formInput">
                 <label>Código Médico</label>
-                <input type='text' placeholder='Código Médico' value={codmedico} onChange={e => setCodmedico(e.target.value)}></input>
+                <input
+                  type="text"
+                  name="codmedico"
+                  placeholder="Código Médico"
+                  value={formData.codmedico}
+                  onChange={handleChange}
+                />
               </div>
               <div className="formInput">
                 <label>Horário e Data</label>
-                <input type='text' placeholder='Horario' value={horariodata} onChange={e => setHorariodata(e.target.value)}></input>
+                <input
+                  type="text"
+                  name="horariodata"
+                  placeholder="2024-06-15"
+                  value={formData.horariodata}
+                  onChange={handleChange}
+                />
               </div>
               <div className="formInput">
                 <label>Status</label>
-                <input type='text' placeholder='Status' value={status} onChange={e => setStatus(e.target.value)}></input>
+                <input
+                  type="text"
+                  name="status"
+                  placeholder="Status"
+                  value={formData.status}
+                  onChange={handleChange}
+                />
               </div>
               <div className="formInput">
                 <label>Descrição</label>
-                <input type='text' placeholder='Descrição' value={descricao} onChange={e => setDescricao(e.target.value)}></input>
+                <input
+                  type="text"
+                  name="descricao"
+                  placeholder="Descrição"
+                  value={formData.descricao}
+                  onChange={handleChange}
+                />
               </div>
-              <button type="submit">Novo</button>
-              <button onClick={putData}>Salvar Alterações</button>         
-          </form>
+              <button type="submit">
+                {userId ? 'Salvar Alterações' : 'Adicionar Consulta'}
+              </button>
+            </form>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NewConsultas
+export default NewConsultas;

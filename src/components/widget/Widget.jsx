@@ -1,5 +1,3 @@
-// src/components/Widget.jsx
-import React from 'react';
 import './Widget.scss';
 
 const Widget = () => {

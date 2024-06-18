@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import './new.scss'
 import Sidebar from "../../components/sidebar/Sidebar"
 import Navbar from "../../components/navbar/Navbar"
+import { useNavigate, useParams } from 'react-router-dom';
 
 const NewPrescricoes = () => {
-
+  const navigate = useNavigate();
   const [codigo, setCodigo] = useState('');
   const [codconsulta, setCodconsulta] = useState('');
   const [medicamento, setMedicamento] = useState('');
@@ -13,60 +14,35 @@ const NewPrescricoes = () => {
   const [frequencia, setFrequencia] = useState('');
   const [datainicio, setDatainicio] = useState('');
   const [datafim, setDatafim] = useState('');
+  const {userId} = useParams();
 
 
   async function postData(event) {
-    event.preventDefault(); // Prevenir o comportamento padrão do formulário
+    event.preventDefault(); 
     try {
-      const response = await axios.post('http://localhost:3000/prescricoes', {
+      const payload = {
+        codigo: userId,
         codconsulta: codconsulta,
         medicamento: medicamento,
         dosagem: dosagem,
         frequencia: frequencia,
         datainicio: datainicio,
         datafim: datafim
-      });
-      alert("Prescrição criada com sucesso!");
-      setCodconsulta('');
-      setMedicamento('');
-      setDosagem('');
-      setFrequencia('');
-      setDatainicio('');
-      setDatafim('');
-    } catch (e) {
-      console.log(e);
+      };
+
+      
+      if (userId) {
+        await axios.put(`http://localhost:3000/prescricoes`, payload);
+        alert("Prescricoes atualizado com sucesso!");
+      } else {
+        await axios.post(`http://localhost:3000/prescricoes`, payload);
+        alert("Prescricoes criado com sucesso!");
+      }
+      navigate("/prescricoes")
+    } catch (error) {
+      console.error('Erro ao salvar prescricoes:', error);
     }
   }
-
-  async function putData() {
-    try {
-      const response = await axios.put('http://localhost:3000/prescricoes', {
-        codigo: codigo,
-        codconsulta: codconsulta,
-        medicamento: medicamento,
-        dosagem: dosagem,
-        frequencia: frequencia,
-        datainicio: datainicio,
-        datafim: datafim
-      });
-      alert("Prescrição alterada com sucesso!");
-      setCodigo('');
-      setCodconsulta('');
-      setMedicamento('');
-      setDosagem('');
-      setFrequencia('');
-      setDatainicio('');
-      setDatafim('');
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-
-
-
-
-
 
   return (
     <div className="new">
@@ -76,13 +52,22 @@ const NewPrescricoes = () => {
         <div className="top"><h1>Adicionar Novas Prescrições</h1></div>
         <div className="bottom">
         <div className="left">
-          <img src="https://img.freepik.com/free-photo/i-trying-be-best-doctor_329181-2188.jpg?w=360&t=st=1717963692~exp=1717964292~hmac=bf4df23bcfa9b662b2fcf33c88383299e39b8772a090f7fe5a70984b616bf870" alt="" className='img'/>
+          <img src="https://img.freepik.com/fotos-premium/medico-feminino-escrita-prescricoes-tabela_13339-264312.jpg?w=740" alt="" className='img'/>
           </div>
           <div className="right">
             <form onSubmit={postData}>
               <div className="formInput">
-                <label>Código</label>
-                <input type='text' placeholder='Código (apenas para realizar uma alteração)' value={codigo} onChange={e => setCodigo(e.target.value)}></input>
+                {userId && (
+                <div className="formInput">
+                  <label>Código</label>
+                  <input
+                    type='text'
+                    placeholder='Código'
+                    value={userId}
+                    readOnly 
+                  />
+                </div>
+              )}
               </div>
               <div className="formInput">
                 <label>Código Consulta</label>
@@ -102,14 +87,15 @@ const NewPrescricoes = () => {
               </div>
               <div className="formInput">
                 <label>Data de início</label>
-                <input type='text' placeholder='Data de início' value={datainicio} onChange={e => setDatainicio(e.target.value)}></input>
+                <input type='text' placeholder='2024-06-13' value={datainicio} onChange={e => setDatainicio(e.target.value)}></input>
               </div>
               <div className="formInput">
                 <label>Data de fim</label>
-                <input type='text' placeholder='Data de fim' value={datafim} onChange={e => setDatafim(e.target.value)}></input>
+                <input type='text' placeholder='2024-06-13' value={datafim} onChange={e => setDatafim(e.target.value)}></input>
               </div>
-              <button type="submit">Novo</button>
-              <button onClick={putData}>Salvar Alterações</button>
+              <button type="submit">
+                {userId ? 'Salvar Prescrições' : 'Adicionar Prescrições'}
+              </button>
           </form>
           </div>
         </div>

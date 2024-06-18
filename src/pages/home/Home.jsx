@@ -1,4 +1,3 @@
-import React from 'react'
 import Sidebar from '../../components/sidebar/Sidebar'
 import './home.scss'
 import Navbar from '../../components/navbar/Navbar'
